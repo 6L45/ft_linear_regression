@@ -1,0 +1,3 @@
+theta0 = 0.0
+theta1 = 0.0
+data = []
