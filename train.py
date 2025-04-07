@@ -37,10 +37,8 @@ def linear_regression(data):
     # Init params
     a = np.random.randn()
     b = np.random.randn()
-    lr = 0.01
-    epoch = 300
-
-    #history = []
+    lr = 0.01       # lr = Learning Rate
+    epoch = 300 
 
     # Préparation figure double (2D + 3D)
     plt.ion()
@@ -90,9 +88,6 @@ def linear_regression(data):
         a -= lr * da
         b -= lr * db
 
-        # Sauvegarde pour tracé
-        #history.append((b, a, loss))
-
         # Conversion pour le tracé réel
         a_real = a * y_std / x_std
         b_real = y_mean + y_std * b - a_real * x_mean
@@ -114,7 +109,7 @@ def linear_regression(data):
     return (a_real, b_real)
 
 
-def main(file = None):
+def main(file=None):
     shared.data = np.loadtxt(file, delimiter=',', skiprows=1)
     (shared.theta0, shared.theta1) = linear_regression(shared.data)
 

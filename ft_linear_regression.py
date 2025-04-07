@@ -5,49 +5,54 @@ from pathlib import Path
 
 def main():
     while True:
+        print()
         try:
-            # if no model are train
+        # 1 check if thetas are initialized (meaning a model has been trained)
             if shared.theta0 == 0 and shared.theta1 == 0:
                 user_input = input("theta0 and theta1 are not initialized, \
 do you wanna train the model with data ? (y | n) > ").lower()
 
-                # if yes for subject basic model trainning
+            # YES case ----------------------------------------------------
                 if user_input == 'y' or user_input == "yes":
-                    train.main("data.csv")
+                    path = Path("data.csv")
+                    if path.exists() and path.is_file():
+                        train.main("data.csv")
+                    else:
+                        print("data.csv is missing")
 
-                # else ask if wanna train an other model
+            # NO case ----------------------------------------------------
                 elif user_input == 'n' or user_input == "no":
                     user_input = input("train with an other model ? \
 (file/path | n) > ")
-                    # if no, then noting
                     if user_input == 'n' or user_input == "no":
                         print("all estimations are 0 ¯\_(ツ)_/¯")
-                    # else check if file exist and tain with it
                     elif user_input == "quit" or user_input == "q":
                         break
                     else:
                         path = Path(user_input)
                         if path.exists() and path.is_file():
-                            print("hello world")
                             train.main(user_input)
                         else:
                             print(f"file {user_input} not found")
 
-                # quit and BS entry
+            # QUIT case ----------------------------------------------------
                 elif user_input == "quit" or user_input == "q":
                     break
 
+            # BS case ----------------------------------------------------
                 else:
-                    print("hahaha so funny !")
+                    print("Hahaha ! So funny !")
 
-            # else si a model has been trained
+        # theta0 and thetha1 initialize (a model has been trained)
             else:
-                user_input = input("enter a value\n\
+                user_input = input("enter a value for model estimation\n\
 (q or quit to leave / t or train to train an other model / s or stats for model stats)\n> ")
 
+            # QUIT case ----------------------------------------------------
                 if user_input == "quit" or user_input == "q":
                     break
 
+            # TRAIN new model case ------------------------------------------
                 elif user_input == "train" or user_input == "t":
                     user_input = input("train with an other model ? \
 (file/path | n) > ")
@@ -62,16 +67,18 @@ do you wanna train the model with data ? (y | n) > ").lower()
                         else:
                             print(f"file {user_input} not found")
 
+            # STATS case ----------------------------------------------------
                 elif user_input == "stats" or user_input == 's':
                     x_data = shared.data[:, 0]
                     y_true = shared.data[:, 1]
                     y_pred = shared.theta0 * x_data + shared.theta1
                     print(f"""
-Mean Absolute Error = {train.calculate_mae(y_true, y_pred)} 
+Mean Absolute Error = {train.calculate_mae(y_true, y_pred)}
 Root Mean Square Error = {train.calculate_rmse(y_true, y_pred)}
 Model accuracy (r2) = {train.calculate_r2(y_true, y_pred)} (coef de determination)
                       """)
 
+            # BASIC case (answering value user input by model estimation)
                 else:
                     kmtrage = float(user_input)
                     if kmtrage < 0:
@@ -81,6 +88,7 @@ Model accuracy (r2) = {train.calculate_r2(y_true, y_pred)} (coef de determinatio
                         print("negative result detected")
                     print(f"estimated price = {estimation}")
 
+    # throws
         except EOFError:
             print()
             break
