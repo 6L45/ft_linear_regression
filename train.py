@@ -3,18 +3,14 @@ import sys
 import matplotlib.pyplot as plt
 import shared
 
-
 def calculate_mae(y_true, y_pred):
     return np.mean(np.abs(y_true - y_pred))
-
 
 def calculate_mse(y_true, y_pred):
     return np.mean((y_true - y_pred) ** 2)
 
-
 def calculate_rmse(y_true, y_pred):
     return np.sqrt(calculate_mse(y_true, y_pred))
-
 
 def calculate_r2(y_true, y_pred):
     mean_y = np.mean(y_true)
@@ -37,28 +33,34 @@ def linear_regression(data):
     # Init params
     a = np.random.randn()
     b = np.random.randn()
-    lr = 0.01       # lr = Learning Rate
-    epoch = 300 
+    lr = 0.01
+    epoch = 300
 
-    # Préparation figure double (2D + 3D)
+    # Mode interactif
     plt.ion()
-    fig = plt.figure(figsize=(12, 6))
+    fig = plt.figure(figsize=(18, 6))
 
-    # Subplot 1 : Régression linéaire (2D)
-    ax1 = fig.add_subplot(1, 2, 1)
+    # === SUBPLOT 1 : RÉGRESSION LINÉAIRE ================================
+    ax1 = fig.add_subplot(1, 3, 1)
     ax1.scatter(x, y, label='data')
     line, = ax1.plot(x, y, color='red', label='linear regression')
     ax1.set_xlabel('Km')
     ax1.set_ylabel('Price')
     ax1.set_title('Linear Regression')
     ax1.legend()
-
-    # Subplot 2 : Surface 3D du loss + point de descente
-    ax2 = fig.add_subplot(1, 2, 2, projection='3d')
+    # === SUBPLOT 2 : SURFACE 3D DU LOSS =================================
+    ax2 = fig.add_subplot(1, 3, 2, projection='3d')
     ax2.set_title('Gradient descent on loss surface')
     ax2.set_xlabel('theta0 (b)')
     ax2.set_ylabel('theta1 (a)')
     ax2.set_zlabel('Loss')
+    # === SUBPLOT 3 : LOSS VS EPOCH =====================================
+    ax3 = fig.add_subplot(1, 3, 3)
+    ax3.set_title("Loss vs Epoch")
+    ax3.set_xlabel("Epoch")
+    ax3.set_ylabel("Loss")
+    loss_history = []
+    loss_line, = ax3.plot([], [], color='purple')
 
     # Pré-calcul surface de perte
     theta0_vals = np.linspace(-3, 3, 100)
@@ -69,36 +71,47 @@ def linear_regression(data):
         for j in range(T0.shape[1]):
             pred = T1[i, j] * x_norm + T0[i, j]
             Loss[i, j] = ((pred - y_norm) ** 2).mean()
-    ax2.plot_surface(T0, T1, Loss, cmap='viridis', alpha=0.6)
 
+    ax2.plot_surface(T0, T1, Loss, cmap='viridis', alpha=0.6)
     point = ax2.plot([], [], [], 'ro')[0]
 
+    # === TRAINING LOOP ==================================================
     for i in range(epoch):
-        # Prédiction et loss
+
+        # Prédiction + Loss
         y_pred = a * x_norm + b
         error = y_pred - y_norm
         loss = (error ** 2).mean()
-        print(f"Epoch {i+1} - Loss: {loss:.6f}")
+        loss_history.append(loss)
+
+        print(f"Epoch {i+1}/{epoch} - Loss: {loss:.6f}")
 
         # Gradients
         da = 2 * (error * x_norm).mean()
         db = 2 * error.mean()
 
-        # Update
+        # Update params
         a -= lr * da
         b -= lr * db
 
-        # Conversion pour le tracé réel
+        # Convert back to real scale
         a_real = a * y_std / x_std
         b_real = y_mean + y_std * b - a_real * x_mean
         y_pred_real = a_real * x + b_real
 
-        # Update du subplot 1 (droite)
+
+    # === Plots update ==================================================
+        # Update subplot 1
         line.set_ydata(y_pred_real)
 
-        # Update du subplot 2 (point 3D sur surface)
+        # Update subplot 2 (point)
         point.set_data([b], [a])
         point.set_3d_properties([loss])
+
+        # Update subplot 3 (loss curve)
+        loss_line.set_data(range(len(loss_history)), loss_history)
+        ax3.relim()
+        ax3.autoscale_view()
 
         plt.pause(0.01)
 
@@ -119,3 +132,4 @@ if __name__ == "__main__":
         main("data.csv")
     else:
         main(sys.argv[1])
+
