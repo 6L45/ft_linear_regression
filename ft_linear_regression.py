@@ -39,6 +39,10 @@ do you wanna train the model with data ? (y | n) > ").lower()
                 elif user_input == "quit" or user_input == "q":
                     break
 
+            # NUM case ----------------------------------------------------
+                elif user_input.isdigit():
+                    print(0)
+
             # BS case ----------------------------------------------------
                 else:
                     print("Hahaha ! So funny !")
