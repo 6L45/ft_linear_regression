@@ -47,7 +47,6 @@ def linear_regression(data):
     ax1.set_ylabel('Price')
     ax1.set_title('Linear Regression')
     ax1.legend()
-
     line, = ax1.plot(x, y, color='red', label='linear regression')
     # === SUBPLOT 2 : SURFACE 3D DU LOSS =================================
     ax2 = fig.add_subplot(1, 3, 2, projection='3d')
@@ -61,20 +60,16 @@ def linear_regression(data):
     ax3.set_xlabel("Epoch")
     ax3.set_ylabel("Loss")
     ax3.set_xlim(0, epoch)
-
     loss_history = []
     loss_line, = ax3.plot([], [], color='purple')
 
-    # 2. Calculer l'erreur et la perte initiale (MSE)
+    # 2. Calculer l'erreur et la perte initiale (MSE) pour Y scale du graph
     y_pred_init = a * x_norm + b
     loss_init = ((y_pred_init - y_norm) ** 2).mean()
-
-    # Définir la limite de l'axe Y
-    # On ajoute une petite marge (ex: 10%) pour que le point ne soit pas collé au sommet
     y_max = loss_init * 1.10
     ax3.set_ylim(0, y_max)
 
-    # Pré-calcul surface de perte
+    # Pré-calcul surface de perte (subplot 2)
     theta0_vals = np.linspace(-3, 3, 100)
     theta1_vals = np.linspace(-3, 3, 100)
     T0, T1 = np.meshgrid(theta0_vals, theta1_vals)
@@ -89,7 +84,6 @@ def linear_regression(data):
 
     # === TRAINING LOOP ==================================================
     for i in range(epoch):
-
         # Prédiction + Loss
         y_pred = a * x_norm + b
         error = y_pred - y_norm
