@@ -12,7 +12,7 @@ def main():
         try:
             if Path("./thetas.csv").is_file() and shared.theta0 == 0 and shared.theta1 == 0:
                 user_input = input("thetas.csv found. do you wanna load values ?\n\
-(y or yes / n or no / q or quit)\n")
+(y or yes / n or no / q or quit)\n> ")
                 if user_input == 'y' or user_input == "yes":
                     with open("thetas.csv", 'r', newline='') as csvF:
                         csv_file = csv.reader(csvF) 
@@ -40,7 +40,7 @@ def main():
                     quit()
                 else:
                     print("hahaha ! so funny")
-
+            print()
         # 1 check if thetas are initialized (meaning a model has been trained)
             if shared.theta0 == 0 and shared.theta1 == 0:
                 user_input = input("theta0 and theta1 are not initialized, \
@@ -128,17 +128,13 @@ Model accuracy (r2) = {train.calculate_r2(y_true, y_pred)} (coef de determinatio
                                        shared.data,         # Le tableau NumPy à sauvegarder
                                        delimiter=",",
                                        fmt='%.17f')         # Assure une bonne précision des flottants
-                            print("Coefficients et données d'entraînement sauvegardés dans thetas.csv.")
-                        except AttributeError:
-                            print("Erreur : shared.data n'est pas un tableau NumPy valide. Sauvegarde des données annulée.")
+                            print("saved in thetas.csv.")
                         except Exception as e:
-                            print(f"Erreur lors de la sauvegarde des données : {e}")
+                            print(f"Error while saving: {e}")
 
                 elif user_input == "print" or user_input == 'p':
                     print("theta0 = ", shared.theta0)
                     print("theta1 = ", shared.theta1)
-                    print()
-                    print(shared.data)
 
             # BASIC case (answering value user input by model estimation)
                 else:
